@@ -18,7 +18,7 @@ const AddVehicleRentalPage = () => {
 
   const navigate = useNavigate();
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  // const user = JSON.parse(localStorage.getItem("user"));
   // const token = user.token;
 
   const addVehicleRental = async (newVehicle) => {

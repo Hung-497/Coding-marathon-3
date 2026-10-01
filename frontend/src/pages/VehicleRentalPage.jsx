@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-const VehicleRentalPage = ({isAuthenticated}) => {
+const VehicleRentalPage = () => {
 
   const { id } = useParams();
 
@@ -9,8 +9,8 @@ const VehicleRentalPage = ({isAuthenticated}) => {
 
     const navigate = useNavigate();
 
-    const user = JSON.parse(localStorage.getItem("user"));
-    const token = user ? user.token : null;
+    // const user = JSON.parse(localStorage.getItem("user"));
+    // const token = user ? user.token : null;
 
     const deleteVehicle = async (vehicleId) => {
         try {
@@ -56,15 +56,18 @@ const VehicleRentalPage = ({isAuthenticated}) => {
                         <button onClick={() => navigate(-1)}>Back</button>
                     </div>
                     <h2>{vehicle.vehicleModel}</h2>
-                    <ul>Agency: <ul>
-                    <p>Description: {vehicle.description}</p>
-                    <p>Price: €{vehicle.price}</p>
-                    <p>Inventory: {vehicle.inventoryCount}</p>
-                    <p>Supplier name: {vehicle.supplier.name}</p>
-                    <p>Contact Email: {vehicle.supplier.contactEmail}</p>
-                    <p>Contact Phone: {vehicle.supplier.contactPhone}</p>
-                    <p>Verified: {vehicle.supplier.isVerified ? "✅" : "❌"}</p>
-                    {isAuthenticated && (
+                    <ul> Agency: </ul>
+                    <li>Agency Name: {vehicle.agency.name}</li>
+                    <li>Agency Email: {vehicle.agency.contactEmail}</li>
+                    <li>Agency Fleet Size: {vehicle.agency.fleetSize}</li>
+                    <p>City: {vehicle.city}</p>
+                    <p>State: {vehicle.state}</p>
+                    <p>Daily Price: €{vehicle.dailyPrice}</p>
+                    <p>Booking Deadline: {vehicle.bookingDeadline}</p>
+                    <p>Insurance Policy: {vehicle.insurancePolicy}</p>
+                    <p>Category: {vehicle.category}</p>
+                    <p>Description: {vehicle.decription}</p>
+                    <p>Availability Status: {vehicle.availabilityStatus}</p>
                         <>
                             <br />
                             <button onClick={() => onDeleteClick(vehicle._id)}>Delete</button>
@@ -72,7 +75,6 @@ const VehicleRentalPage = ({isAuthenticated}) => {
                             <button onClick={() => navigate(`/edit-vehicle/${id}`)}>Edit</button>
                             <br />
                         </>
-                    )}
 
                 </div>
             )}
