@@ -10,7 +10,11 @@ const Login = ({ setIsAuthenticated }) => {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    const user = await login({ username, password });
+    const credentials = {
+      username: username.value,
+      password: password.value,
+    }
+    const user = await login(credentials);
     if (user) {
       setIsAuthenticated(true);
       navigate("/");

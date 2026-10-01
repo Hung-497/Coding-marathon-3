@@ -22,7 +22,20 @@ const Signup = ({ setIsAuthenticated }) => {
       city,
       yearsOfExperience
     }
-    const user = await signup({ name, username, password, phone_number, licenseNumber, date_of_birth, address});
+    const credentials = {
+          name: name.value,
+          username: username.value, 
+          password: password.value, 
+          phone_number: phone_number.value,
+          licenseNumber: licenseNumber.value, 
+          date_of_birth: date_of_birth.value, 
+          address: {
+            licenseExpiryDate: licenseExpiryDate.value,
+            city: city.value,
+            yearsOfExperience: yearsOfExperience.value
+          }
+        }
+    const user = await signup(credentials);
     if (user) {
       setIsAuthenticated(true);
       navigate("/");
@@ -38,7 +51,7 @@ const Signup = ({ setIsAuthenticated }) => {
         <label>Username:</label>
         <input {...username} type="text"/>
         <label>Password:</label>
-        <input {...password} type="text"/>
+        <input {...password} type="password"/>
         <label>Phone number:</label>
         <input {...phone_number} type="text"/>
         <label>License number:</label>
