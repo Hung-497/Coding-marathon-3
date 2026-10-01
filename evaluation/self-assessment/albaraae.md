@@ -1,0 +1,1 @@
+I think that the code quality is not bad because we mostly used the code from the material, we mainly had problems when merging backend and frontend,but we overcame them.
