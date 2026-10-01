@@ -1,0 +1,2 @@
+## Grading
+- I think i will give myself 45/60. Because of my bad at coding on the testing, it took much than the group expected, it could be faster to get the points. If my teammate Hung didn't lend a hand to help in my part, the time could be more than we imagined

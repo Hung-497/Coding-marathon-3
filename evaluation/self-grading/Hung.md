@@ -1,0 +1,2 @@
+## Grading
+- I think i deserve myself 60/60 today. I completed the required backend's works successfully. I also contributed to debugging, testing. I believe our contribution to each other was consistent and important to the successful completion of the backend part of the project
