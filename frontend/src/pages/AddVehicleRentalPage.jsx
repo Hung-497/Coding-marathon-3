@@ -18,8 +18,8 @@ const AddVehicleRentalPage = () => {
 
   const navigate = useNavigate();
 
-  // const user = JSON.parse(localStorage.getItem("user"));
-  // const token = user.token;
+  const user = JSON.parse(localStorage.getItem("user"));
+  const token = user.token;
 
   const addVehicleRental = async (newVehicle) => {
     try {
@@ -27,7 +27,7 @@ const AddVehicleRentalPage = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          // Authorization: `Bearer ${token}`,s
+          Authorization: `Bearer ${token}`,s
         },
         body: JSON.stringify(newVehicle),
       });

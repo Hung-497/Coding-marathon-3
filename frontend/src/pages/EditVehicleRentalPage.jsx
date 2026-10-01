@@ -20,6 +20,9 @@ const EditVehicleRentalPage = () => {
   const [bookingDeadline, setBookingDeadline] = useState("");
   const [insurancePolicy, setInsurancePolicy] = useState("");
 
+  const user = JSON.parse(localStorage.getItem("user"));
+  const token = user ? user.token : null;
+
   useEffect(() => {
     const fetchVehicle = async () => {
       try {
@@ -59,6 +62,8 @@ const EditVehicleRentalPage = () => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+
         },
         body: JSON.stringify(vehicle),
       });
@@ -77,23 +82,23 @@ const EditVehicleRentalPage = () => {
     e.preventDefault();
 
     const updatedVehicle = {
-            vehicleModel: vehicleModel,
-            agency: {
-              name: agencyName,
-              contactEmail: agencyContactEmail,
-              fleetSize: fleetSize,
-            },
-            location: {
-              city: city,
-              state: state,
-            },
-            dailyPrice: dailyPrice,
-            bookingDeadline: bookingDeadline,
-            insurancePolicy: insurancePolicy,
-            category: category,
-            description: description,
-            availabilityStatus: availabilityStatus,
-        };
+      vehicleModel: vehicleModel,
+      agency: {
+        name: agencyName,
+        contactEmail: agencyContactEmail,
+        fleetSize: fleetSize,
+      },
+      location: {
+        city: city,
+        state: state,
+      },
+      dailyPrice: dailyPrice,
+      bookingDeadline: bookingDeadline,
+      insurancePolicy: insurancePolicy,
+      category: category,
+      description: description,
+      availabilityStatus: availabilityStatus,
+    };
 
     updateVehicle(updatedVehicle);
     return navigate(`/vehicles/${id}`);
@@ -206,7 +211,7 @@ const EditVehicleRentalPage = () => {
           value={insurancePolicy}
           onChange={(e) => setInsurancePolicy(e.target.value)}
         />
-        
+
         <button>Save Update</button>
       </form>
     </div>
