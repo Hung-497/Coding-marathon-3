@@ -1,0 +1,294 @@
+{
+	"openapi": "3.0.3",
+	"info": {
+		"title": "Vehicle Rental API",
+		"version": "1.0.0",
+		"description": "Deployed vehicle rental API for account registration and authentication, and browsing and managing vehicle rental listings. Creating, updating, and deleting listings requires a bearer token."
+	},
+	"servers": [
+		{
+			"url": "https://coding-marathon-3-1.onrender.com",
+			"description": "Deployed API"
+		},
+		{
+			"url": "http://localhost:4000",
+			"description": "Local development server"
+		}
+	],
+	"tags": [
+		{ "name": "Authentication", "description": "Account registration and login" },
+		{ "name": "Vehicle rentals", "description": "Browse and manage vehicle rental listings" }
+	],
+	"paths": {
+		"/api/auth/signup": {
+			"post": {
+				"tags": ["Authentication"],
+				"summary": "Register an account",
+				"operationId": "signUpUser",
+				"requestBody": {
+					"required": true,
+					"content": { "application/json": { "schema": { "$ref": "#/components/schemas/SignupRequest" } } }
+				},
+				"responses": {
+					"201": {
+						"description": "Account created",
+						"content": { "application/json": { "schema": { "$ref": "#/components/schemas/AuthResponse" } } }
+					},
+					"400": {
+						"description": "Missing or invalid account data, or username already exists",
+						"content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+					}
+				}
+			}
+		},
+		"/api/auth/login": {
+			"post": {
+				"tags": ["Authentication"],
+				"summary": "Log in",
+				"operationId": "loginUser",
+				"requestBody": {
+					"required": true,
+					"content": { "application/json": { "schema": { "$ref": "#/components/schemas/LoginRequest" } } }
+				},
+				"responses": {
+					"200": {
+						"description": "Authenticated",
+						"content": { "application/json": { "schema": { "$ref": "#/components/schemas/AuthResponse" } } }
+					},
+					"400": {
+						"description": "Invalid credentials or malformed request",
+						"content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+					}
+				}
+			}
+		},
+		"/api/vehicleRentals": {
+			"get": {
+				"tags": ["Vehicle rentals"],
+				"summary": "List vehicle rentals",
+				"operationId": "getAllVehicleRentals",
+				"responses": {
+					"200": {
+						"description": "Vehicle rental listings, newest first",
+						"content": {
+							"application/json": {
+								"schema": { "type": "array", "items": { "$ref": "#/components/schemas/VehicleRental" } }
+							}
+						}
+					},
+					"400": {
+						"description": "Could not retrieve listings",
+						"content": { "application/json": { "schema": { "$ref": "#/components/schemas/MessageError" } } }
+					}
+				}
+			},
+			"post": {
+				"tags": ["Vehicle rentals"],
+				"summary": "Create a vehicle rental listing",
+				"operationId": "createVehicleRental",
+				"security": [{ "bearerAuth": [] }],
+				"requestBody": {
+					"required": true,
+					"content": { "application/json": { "schema": { "$ref": "#/components/schemas/VehicleRentalInput" } } }
+				},
+				"responses": {
+					"201": {
+						"description": "Listing created",
+						"content": { "application/json": { "schema": { "$ref": "#/components/schemas/VehicleRental" } } }
+					},
+					"400": {
+						"description": "Invalid or incomplete listing data",
+						"content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+					},
+					"401": {
+						"description": "Missing or invalid bearer token",
+						"content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+					}
+				}
+			}
+		},
+		"/api/vehicleRentals/{id}": {
+			"parameters": [
+				{
+					"name": "id",
+					"in": "path",
+					"required": true,
+					"description": "MongoDB ObjectId of the vehicle rental listing",
+					"schema": { "type": "string", "pattern": "^[a-fA-F0-9]{24}$", "example": "65f1a4c8b82d4b0012a3c456" }
+				}
+			],
+			"get": {
+				"tags": ["Vehicle rentals"],
+				"summary": "Get a vehicle rental listing",
+				"operationId": "getVehicleRentalById",
+				"responses": {
+					"200": {
+						"description": "Vehicle rental listing",
+						"content": { "application/json": { "schema": { "$ref": "#/components/schemas/VehicleRental" } } }
+					},
+					"404": {
+						"description": "Listing does not exist or ID is invalid",
+						"content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+					},
+					"500": {
+						"description": "Could not retrieve listing",
+						"content": { "application/json": { "schema": { "$ref": "#/components/schemas/MessageError" } } }
+					}
+				}
+			},
+			"put": {
+				"tags": ["Vehicle rentals"],
+				"summary": "Update a vehicle rental listing",
+				"operationId": "updateVehicleRental",
+				"security": [{ "bearerAuth": [] }],
+				"requestBody": {
+					"required": true,
+					"description": "Listing fields accepted by the update endpoint.",
+					"content": { "application/json": { "schema": { "$ref": "#/components/schemas/VehicleRentalInput" } } }
+				},
+				"responses": {
+					"200": {
+						"description": "Updated listing",
+						"content": { "application/json": { "schema": { "$ref": "#/components/schemas/VehicleRental" } } }
+					},
+					"401": {
+						"description": "Missing or invalid bearer token",
+						"content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+					},
+					"404": {
+						"description": "Listing does not exist or ID is invalid",
+						"content": { "application/json": { "schema": { "$ref": "#/components/schemas/MessageError" } } }
+					},
+					"500": {
+						"description": "Could not update listing",
+						"content": { "application/json": { "schema": { "$ref": "#/components/schemas/MessageError" } } }
+					}
+				}
+			},
+			"delete": {
+				"tags": ["Vehicle rentals"],
+				"summary": "Delete a vehicle rental listing",
+				"operationId": "deleteVehicleRental",
+				"security": [{ "bearerAuth": [] }],
+				"responses": {
+					"204": { "description": "Listing deleted" },
+					"401": {
+						"description": "Missing or invalid bearer token",
+						"content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+					},
+					"404": {
+						"description": "Listing does not exist or ID is invalid",
+						"content": { "application/json": { "schema": { "$ref": "#/components/schemas/MessageError" } } }
+					},
+					"500": {
+						"description": "Could not delete listing",
+						"content": { "application/json": { "schema": { "$ref": "#/components/schemas/MessageError" } } }
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"securitySchemes": {
+			"bearerAuth": {
+				"type": "http",
+				"scheme": "bearer",
+				"bearerFormat": "JWT",
+				"description": "Use the JWT returned by signup or login."
+			}
+		},
+		"schemas": {
+			"SignupRequest": {
+				"type": "object",
+				"required": ["name", "username", "password", "phone_number", "licenseNumber", "date_of_birth", "address"],
+				"properties": {
+					"name": { "type": "string", "example": "Alex Driver" },
+					"username": { "type": "string", "example": "alexdriver" },
+					"password": { "type": "string", "format": "password", "example": "change-me" },
+					"phone_number": { "type": "string", "example": "+1-555-0100" },
+					"licenseNumber": { "type": "string", "example": "D1234567" },
+					"date_of_birth": { "type": "string", "format": "date-time" },
+					"address": { "$ref": "#/components/schemas/Address" }
+				}
+			},
+			"Address": {
+				"type": "object",
+				"required": ["licenseExpiryDate", "city", "yearsOfExperience"],
+				"properties": {
+					"licenseExpiryDate": { "type": "string", "format": "date-time" },
+					"city": { "type": "string" },
+					"yearsOfExperience": { "type": "number" }
+				}
+			},
+			"LoginRequest": {
+				"type": "object",
+				"required": ["username", "password"],
+				"properties": {
+					"username": { "type": "string", "example": "alexdriver" },
+					"password": { "type": "string", "format": "password" }
+				}
+			},
+			"AuthResponse": {
+				"type": "object",
+				"required": ["username", "token"],
+				"properties": {
+					"username": { "type": "string" },
+					"token": { "type": "string", "description": "JWT bearer token, valid for 10 days" }
+				}
+			},
+			"VehicleRentalInput": {
+				"type": "object",
+				"required": ["vehicleModel", "category", "description", "agency", "location", "dailyPrice", "insurancePolicy"],
+				"properties": {
+					"vehicleModel": { "type": "string", "example": "Toyota Corolla" },
+					"category": { "type": "string", "example": "Sedan" },
+					"description": { "type": "string" },
+					"agency": { "$ref": "#/components/schemas/Agency" },
+					"location": { "$ref": "#/components/schemas/Location" },
+					"dailyPrice": { "type": "number", "format": "double", "minimum": 0 },
+					"listingDate": { "type": "string", "format": "date-time" },
+					"availabilityStatus": { "type": "string", "enum": ["available", "rented", "maintenance"], "default": "available" },
+					"bookingDeadline": { "type": "string", "format": "date-time", "nullable": true },
+					"insurancePolicy": { "type": "string" }
+				}
+			},
+			"Agency": {
+				"type": "object",
+				"required": ["name", "contactEmail"],
+				"properties": {
+					"name": { "type": "string" },
+					"contactEmail": { "type": "string", "format": "email" },
+					"fleetSize": { "type": "number", "nullable": true }
+				}
+			},
+			"Location": {
+				"type": "object",
+				"required": ["city", "state"],
+				"properties": { "city": { "type": "string" }, "state": { "type": "string" } }
+			},
+			"VehicleRental": {
+				"allOf": [
+					{ "$ref": "#/components/schemas/VehicleRentalInput" },
+					{
+						"type": "object",
+						"required": ["id", "createdAt", "updatedAt"],
+						"properties": {
+							"id": { "type": "string", "example": "65f1a4c8b82d4b0012a3c456" },
+							"_id": { "type": "string", "readOnly": true },
+							"createdAt": { "type": "string", "format": "date-time" },
+							"updatedAt": { "type": "string", "format": "date-time" }
+						}
+					}
+				]
+			},
+			"Error": {
+				"type": "object",
+				"properties": { "error": { "type": "string" } }
+			},
+			"MessageError": {
+				"type": "object",
+				"properties": { "message": { "type": "string" } }
+			}
+		}
+	}
+}
