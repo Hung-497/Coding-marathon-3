@@ -4,7 +4,8 @@ const mongoose = require("mongoose");
 // GET /api/vehicleRentals
 const getAllVehicleRentals = async (req, res) => {
   try {
-    const vehicleRentals = await VehicleRental.find({}).sort({ createdAt: -1 });
+    const user_id = req.user._id
+    const vehicleRentals = await VehicleRental.find({user_id}).sort({ createdAt: -1 });
     res.status(200).json(vehicleRentals);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -27,7 +28,9 @@ const createVehicleRental = async (req, res) => {
   } = req.body;
 
   try {
+    const user_id = req.user._id
     const vehicleRental = await VehicleRental.create({
+      user_id,
       vehicleModel,
       category,
       description,

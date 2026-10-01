@@ -2,23 +2,23 @@ const mongoose = require("mongoose");
 const supertest = require("supertest");
 const app = require("../app");
 const connectDB = require("../config/db");
-const User = require("../models/userModel.js");
+const User = require("../models/userModel");
 
 const api = supertest(app);
 
 const validUser = {
-  name: "TD",
-  username: "TD123",
-  password: "CarRental123",
-  phone_number: "+358401234567",
-  licenseNumber: "12345678",
-  date_of_birth: "1995-06-15",
-  address : {
-    liceseExpirationDate: "2025-06-15",
-    city: "Helsinki",
-    yearofExperience: 5,
-  },
-};
+  name: "jojo",
+  username: "jojo@example.com",
+  password: "Secret123",
+  phone_number: "1234567890",
+  licenseNumber: "0987654321",
+  date_of_birth: "2000-04-12",
+  address: {
+    licenseExpiryDate: "2010-05-13",
+    city: "Texax",
+    yearsOfExperience: 2025
+  }
+}
 
 beforeAll(async () => {
   await connectDB();
@@ -32,7 +32,6 @@ afterAll(async () => {
   await mongoose.connection.close();
 });
 
-
 describe("POST /api/auth/signup", () => {
   describe("when the user is valid", () => {
     it("should return status 201", async () => {
@@ -40,6 +39,7 @@ describe("POST /api/auth/signup", () => {
         .post("/api/auth/signup")
         .send(validUser)
         .expect(201)
+        .expect("Content-Type", /application\/json/);
     });
 
     it("should return an username and token", async () => {
@@ -68,7 +68,7 @@ describe("POST /api/auth/signup", () => {
         .send({ username: "missing@example.com" })
         .expect(400);
 
-      expect(response.body).toHaveProperty("error", "Please fill all sections");
+      expect(response.body).toHaveProperty("error", "Please fill all sections.");
     });
 
     it("should not persist a user in the database", async () => {
@@ -91,11 +91,10 @@ describe("POST /api/auth/signup", () => {
         .send({ ...validUser, name: "Another Productowner" })
         .expect(400);
 
-      expect(response.body).toHaveProperty("error", "User already exists");
+      expect(response.body).toHaveProperty("error", "already exists");
     });
   });
 });
-
 
 describe("POST /api/auth/login", () => {
   beforeEach(async () => {
@@ -116,7 +115,7 @@ describe("POST /api/auth/login", () => {
 
     it("should return an username and token", async () => {
       const response = await api
-        .post("/api/users/login")
+        .post("/api/auth/login")
         .send({
           username: validUser.username,
           password: validUser.password,

@@ -3,6 +3,7 @@ const supertest = require("supertest");
 const app = require("../app");
 const connectDB = require("../config/db");
 const VehicleRentals = require("../models/vehicleRentalModel");
+const User = require("../models/userModel");
 
 const api = supertest(app);
 
@@ -47,17 +48,52 @@ const vehicleRentals = [
   },
 ];
 
+const validUser = {
+  name: "jojo",
+  username: "jojo@example.com",
+  password: "Secret123",
+  phone_number: "1234567890",
+  licenseNumber: "0987654321",
+  date_of_birth: "2000-04-12",
+  address: {
+    licenseExpiryDate: "2010-05-13",
+    city: "Texax",
+    yearsOfExperience: 2025,
+  },
+};
+
+let token = null;
+
+const authorizedRequest = (request) => {
+  request.set("Authorization", "bearer " + token);
+};
+
 beforeAll(async () => {
   await connectDB();
 });
 
 beforeEach(async () => {
+  await User.deleteMany({});
+  const result = await api.post("/api/auth/signup").send(validUser);
+  token = result.body.token;
+
   await VehicleRentals.deleteMany({});
-  await VehicleRentals.insertMany(vehicleRentals);
+  await authorizedRequest(api.post("/api/vehicleRentals"))
+    .send(vehicleRentals[0])
+    .expect(201);
+  await authorizedRequest(api.post("/api/vehicleRentals"))
+    .send(vehicleRentals[1])
+    .expect(201);
 });
 
 afterAll(async () => {
   await mongoose.connection.close();
+});
+
+describe("POST /api/user/signup", () => {
+  it("should return a token on successful signup", () => {
+    expect(token).not.toBeNull();
+  });
 });
 
 describe("GET /api/vehicleRentals", () => {
@@ -106,7 +142,9 @@ describe("POST /api/vehicleRentals", () => {
         insurancePolicy: "Comprehensive coverage with roadside assistance",
       };
 
-      await api.post("/api/vehicleRentals").send(newVehicles).expect(201);
+      await authorizedRequest(api.post("/api/vehicleRentals"))
+        .send(newVehicles)
+        .expect(201);
     });
 
     it("should persist the new vehicles in the database", async () => {
@@ -130,9 +168,13 @@ describe("POST /api/vehicleRentals", () => {
         insurancePolicy: "Comprehensive coverage with roadside assistance",
       };
 
-      await api.post("/api/vehicleRentals").send(newVehicles).expect(201);
+      await authorizedRequest(api.post("/api/vehicleRentals"))
+        .send(newVehicles)
+        .expect(201);
 
-      const vehiclesAfterPost = await VehicleRentals.find({});
+      const vehiclesAfterPost = await authorizedRequest(
+        api.get("/api/vehicleRentals"),
+      );
       expect(vehiclesAfterPost).toHaveLength(vehicleRentals.length + 1);
       expect(
         vehiclesAfterPost.map((vehicle) => vehicle.vehicleModel),
@@ -162,8 +204,7 @@ describe("when the payload is invalid", () => {
       insurancePolicy: "Comprehensive coverage with roadside assistance",
     };
 
-    await api
-      .post("/api/vehicleRentals")
+    await authorizedRequest(api.post("/api/vehicleRentals"))
       .send(invalidVehicleRental)
       .expect(400);
   });
@@ -188,12 +229,13 @@ describe("when the payload is invalid", () => {
       insurancePolicy: "Comprehensive coverage with roadside assistance",
     };
 
-    await api
-      .post("/api/vehicleRentals")
+    await authorizedRequest(api.post("/api/vehicleRentals"))
       .send(invalidVehicleRental)
       .expect(400);
 
-    const VehicleRentalsAtEnd = await VehicleRentals.find({});
+    const VehicleRentalsAtEnd = await authorizedRequest(
+      api.get("/api/vehicleRentals"),
+    );
     expect(VehicleRentalsAtEnd).toHaveLength(vehicleRentals.length);
   });
 });
@@ -201,33 +243,34 @@ describe("when the payload is invalid", () => {
 describe("PUT /api/vehicleRentals/:vehicleId", () => {
   describe("when the id is valid", () => {
     it("should return status 200", async () => {
-      const vehicleRental = await VehicleRentals.findOne();
-
-      await api
-        .put(`/api/vehicleRentals/${vehicleRental.id}`)
+      const vehicleRental = await authorizedRequest(
+        api.get("/api/vehicleRentals"),
+      );
+      const id = vehicleRental.body[0].id;
+      await authorizedRequest(api.patch(`/api/vehicleRentals/${id}`))
         .send({ description: "Updated description" })
         .expect(200);
     });
 
     it("should persist the updated fields in the database", async () => {
-      const vehicleRental = await VehicleRentals.findOne();
-      const updates = {
-        description: "Updated description",
-      };
-
-      await api
-        .put(`/api/vehicleRentals/${vehicleRental.id}`)
-        .send(updates)
+      const vehicleRental = await authorizedRequest(
+        api.get("/api/vehicleRentals"),
+      );
+      const id = vehicleRental.body[0].id;
+      await authorizedRequest(api.patch(`/api/vehicleRentals/${id}`))
+        .send({ description: "Updated description" })
         .expect(200);
 
-      const updatedVehicle = await VehicleRentals.findById(vehicleRental.id);
+      const updatedVehicle = await VehicleRentals.findById(id);
       expect(updatedVehicle.description).toBe(updates.description);
     });
   });
 
   describe("when the id is invalid", () => {
     it("should return status 404", async () => {
-      await api.put("/api/vehicalRentals/12345").send({}).expect(404);
+      await authorizedRequest(api.put("/api/vehicalRentals/12345"))
+        .send({})
+        .expect(404);
     });
   });
 });
@@ -235,24 +278,36 @@ describe("PUT /api/vehicleRentals/:vehicleId", () => {
 describe("DELETE /api/vehicle-rentals/:vehicleId", () => {
   describe("when the id is valid", () => {
     it("should return status 204", async () => {
-      const vehicleRental = await VehicleRentals.findOne();
+      const vehicleRental = await authorizedRequest(
+        api.get("/api/vehicleRentals"),
+      );
+      const id = vehicleRental.body[0].id;
 
-      await api.delete(`/api/vehicleRentals/${vehicleRental.id}`).expect(204);
+      await authorizedRequest(api.delete(`/api/vehicleRentals/${id}`)).expect(
+        204,
+      );
     });
 
     it("should remove the product from the database", async () => {
-      const vehicleRental = await VehicleRentals.findOne();
+      const vehicleRental = await authorizedRequest(
+        api.get("/api/vehicleRentals"),
+      );
+      const id = vehicleRental.body[0].id;
 
-      await api.delete(`/api/vehicleRentals/${vehicleRental.id}`).expect(204);
+      await authorizedRequest(api.delete(`/api/vehicleRentals/${id}`)).expect(
+        204,
+      );
 
-      const deletedVehicle = await VehicleRentals.findById(vehicleRental.id);
+      const deletedVehicle = await VehicleRentals.findById(id);
       expect(deletedVehicle).toBeNull();
     });
   });
 
   describe("when the id is invalid", () => {
     it("should return status 404", async () => {
-      await api.delete("/api/vehicleRentals/12345").expect(404);
+      await authorizedRequest(api.delete("/api/vehicleRentals/12345")).expect(
+        404,
+      );
     });
   });
 });

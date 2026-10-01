@@ -4,6 +4,10 @@ const Schema = mongoose.Schema;
 
 const vehicleRentalSchema = new Schema(
   {
+    user_id: {
+      type:String,
+      required: true,
+    },
     vehicleModel: {
       type: String,
       required: true,
