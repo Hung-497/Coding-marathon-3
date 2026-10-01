@@ -27,7 +27,9 @@ const createVehicleRental = async (req, res) => {
   } = req.body;
 
   try {
+    const user_id = req.user._id
     const vehicleRental = await VehicleRental.create({
+      user_id,
       vehicleModel,
       category,
       description,
@@ -104,7 +106,7 @@ const updateVehicleRental = async (req, res) => {
       { new: true },
     );
     if (!updatedVehicle) {
-      res.status(404).json({ message: " 404 not found" });
+      return res.status(404).json({ message: " 404 not found" });
     }
 
     res.status(200).json(updatedVehicle);
@@ -123,7 +125,7 @@ const deleteVehicleRental = async (req, res) => {
   try {
     const deleteVehicle = await VehicleRental.findByIdAndDelete(id);
     if (!deleteVehicle) {
-      res.status(404).json({ message: "not found" });
+      return res.status(404).json({ message: "not found" });
     }
     res.status(204).send();
   } catch (error) {
