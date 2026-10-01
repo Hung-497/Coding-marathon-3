@@ -1,7 +1,11 @@
+import { Link } from "react-router-dom";
+
 const VehicleRentalListing = ({ vehicle }) => {
   return (
     <div className="rental-preview">
+      <Link to={`/vehicles/${vehicle.id}`}>
       <h2>Vehicle Model: {vehicle.vehicleModel}</h2>
+      </Link>
       <p>Category: {vehicle.category}</p>
       <p>Daily Price: {vehicle.dailyPrice}</p>
       <p>Agency:</p>
@@ -11,9 +15,11 @@ const VehicleRentalListing = ({ vehicle }) => {
       <p>Location:</p>
       <p>City: {vehicle.location.city}</p>
       <p>State: {vehicle.location.state}</p>
-      <p>Listing Date: {vehicle.listingDate}</p>
+      <p>Listing Date: {vehicle.listingDate  ? new Date(vehicle.listingDate).toLocaleDateString()
+                     : "—"}</p>
       <p>Availability: {vehicle.availabiltyStatus}</p>
-      <p>Booking Deadline: {vehicle.bookingDeadline}</p>
+      <p>Booking Deadline: {vehicle.bookingDeadline   ? new Date(vehicle.bookingDeadline).toLocaleDateString()
+                     : "—"} </p>
       <p>Insurance Policy: {vehicle.insurancePolicy}</p>
     </div>
   );

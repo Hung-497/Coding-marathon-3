@@ -13,8 +13,8 @@ const AddVehicleRentalPage = () => {
   const bookingDeadline = useField(""); ///type = date
   const insurancePolicy = useField("")
   const description = useField("");
-  const category = useField("Economy");
-  const availabilityStatus = useField("available");
+  const category = useField("");
+  const availabilityStatus = useField("");
 
   const navigate = useNavigate();
 
@@ -79,6 +79,9 @@ const AddVehicleRentalPage = () => {
         <input {...vehicleModel} required />
         <label>Category:</label>
         <select {...category}>
+          <option value='' disabled default>
+              Select an option...
+          </option>
           <option value="Economy">Economy</option>
           <option value="Luxury">Luxury</option>
           <option value="SUV">SUV</option>
@@ -101,7 +104,10 @@ const AddVehicleRentalPage = () => {
         <input {...dailyPrice} type="number" step="0.01" min="0" required />
         <label>Availability Status:</label>
         <select {...availabilityStatus}>
-          <option value="available" default>Available</option>
+          <option value='' disabled default>
+              Select an option...
+          </option>
+          <option value="available">Available</option>
           <option value="rented">Rented</option>
           <option value="maintenance">Maintenance</option>
         </select>

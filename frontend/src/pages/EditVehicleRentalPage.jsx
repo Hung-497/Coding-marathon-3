@@ -6,7 +6,8 @@ const EditVehicleRentalPage = () => {
   const navigate = useNavigate();
 
   const [vehicleModel, setVehicleModel] = useState("");
-  const [category, setCategory] = useState("economy");
+  const [category, setCategory] = useState("");
+  const [loading, setLoading] = useState("");
   const [description, setDescription] = useState("");
   const [agencyName, setAgencyName] = useState("");
   const [agencyContactEmail, setAgencyContactEmail] = useState("");
@@ -15,14 +16,14 @@ const EditVehicleRentalPage = () => {
   const [state, setState] = useState("");
   const [dailyPrice, setDailyPrice] = useState("");
   const [listingDate, setListingDate] = useState("");;
-  const [availabilityStatus, setAvailabilityStatus] = useState("available");
+  const [availabilityStatus, setAvailabilityStatus] = useState("");
   const [bookingDeadline, setBookingDeadline] = useState("");
   const [insurancePolicy, setInsurancePolicy] = useState("");
 
   useEffect(() => {
-    const fetchProduct = async () => {
+    const fetchVehicle = async () => {
       try {
-        const res = await fetch(`/api/vehicles/${id}`);
+        const res = await fetch(`/api/vehicleRentals/${id}`);
         const data = await res.json();
         setVehicleModel(data.vehicleModel);
         setCategory(data.category);
@@ -33,22 +34,28 @@ const EditVehicleRentalPage = () => {
         setCity(data.location.city);
         setState(data.location.state);
         setDailyPrice(data.dailyPrice);
-        setListingDate(data.listingDate);
+        setListingDate(data.listingDate
+          ? data.listingDate.split("T")[0]
+          : ""
+        );
         setAvailabilityStatus(data.availabilityStatus);
-        setBookingDeadline(data.bookingDeadline);
+        setBookingDeadline(data.bookingDeadline
+          ? data.bookingDeadline.split("T")[0]
+          : ""
+        );
         setInsurancePolicy(data.insurancePolicy);
       } catch (error) {
-        console.error("Error fetching product:", error);
+        console.error("Error fetching vehicle:", error);
       } finally {
         setLoading(false);
       }
     };
-    fetchProduct();
+    fetchVehicle();
   }, [id]);
 
   const updateVehicle = async (vehicle) => {
     try {
-      const res = await fetch(`/api/vehicles/${id}`, {
+      const res = await fetch(`/api/vehicleRentals/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -69,22 +76,27 @@ const EditVehicleRentalPage = () => {
   const submitForm = (e) => {
     e.preventDefault();
 
-    const updatedProduct = {
-      productName,
-      category,
-      description,
-      price,
-      inventoryCount,
-      supplier: {
-        name: supplierName,
-        contactEmail: supplierContactEmail,
-        contactPhone: supplierContactPhone,
-        isVerified
-      },
-    };
+    const updatedVehicle = {
+            vehicleModel: vehicleModel,
+            agency: {
+              name: agencyName,
+              contactEmail: agencyContactEmail,
+              fleetSize: fleetSize,
+            },
+            location: {
+              city: city,
+              state: state,
+            },
+            dailyPrice: dailyPrice,
+            bookingDeadline: bookingDeadline,
+            insurancePolicy: insurancePolicy,
+            category: category,
+            description: description,
+            availabilityStatus: availabilityStatus,
+        };
 
-    updateProduct(updatedProduct);
-    return navigate(`/products/${id}`);
+    updateVehicle(updatedVehicle);
+    return navigate(`/vehicles/${id}`);
   };
 
   if (loading) {

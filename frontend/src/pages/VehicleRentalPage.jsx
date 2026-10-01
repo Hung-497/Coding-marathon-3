@@ -36,7 +36,7 @@ const VehicleRentalPage = () => {
     useEffect(() => {
         const fetchVehicle = async () => {
             try {
-                const response = await fetch(`/api/vehicles/${id}`);
+                const response = await fetch(`/api/vehicleRentals/${id}`);
                 if (!response.ok) throw new Error("Could not fetch vehicle");
                 const data = await response.json();
                 setVehicle(data);
@@ -64,16 +64,21 @@ const VehicleRentalPage = () => {
                     <li>City: {vehicle.location.city}</li>
                     <li>State: {vehicle.location.state}</li>
                     <p>Daily Price: €{vehicle.dailyPrice}</p>
-                    <p>Booking Deadline: {vehicle.bookingDeadline}</p>
+                    <p>Booking Deadline: {vehicle.bookingDeadline
+                      ? new Date(vehicle.bookingDeadline).toLocaleDateString()
+                     : "—"}
+                    </p>
                     <p>Insurance Policy: {vehicle.insurancePolicy}</p>
                     <p>Category: {vehicle.category}</p>
                     <p>Description: {vehicle.decription}</p>
+                    <p>Listing Date: {vehicle.listingDate  ? new Date(vehicle.listingDate).toLocaleDateString()
+                     : "—"}</p>
                     <p>Availability Status: {vehicle.availabilityStatus}</p>
                         <>
                             <br />
                             <button onClick={() => onDeleteClick(vehicle._id)}>Delete</button>
                             &nbsp;&nbsp;&nbsp;&nbsp;
-                            <button onClick={() => navigate(`/edit-vehicle/${id}`)}>Edit</button>
+                            <button onClick={() => navigate(`/edit-vehicles/${id}`)}>Edit</button>
                             <br />
                         </>
 
