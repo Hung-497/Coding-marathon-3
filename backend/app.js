@@ -14,12 +14,16 @@ app.use(requestLogger);
 // Routes
 app.use('/api/vehicleRentals', vehicleRentalRouter);
 
-//Static view
+//Static View
 app.use(express.static(path.join(__dirname, 'view')));
 
 // Error handling
-app.use(unknownEndpoint);
+app.use('/api', unknownEndpoint);
 app.use(errorHandler);
+app.use((req, res) => {
+  res.sendFile(path.join(__dirname, 'view', 'index.html'));
+});
+
 
 app.use((req, res) => {
   res.sendFile(path.join(__dirname, 'view', 'index.html'));

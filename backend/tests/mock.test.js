@@ -1,3 +1,5 @@
-test('adds 1 + 1 to equal 2', () => {
-  expect(1 + 1).toBe(2);
+describe("sanity check", () => {
+  it("should confirm 1 + 1 equals 2", () => {
+    expect(1 + 1).toBe(2);
+  });
 });
