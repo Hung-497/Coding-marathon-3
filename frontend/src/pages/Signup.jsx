@@ -6,7 +6,7 @@ const Signup = ({ setIsAuthenticated }) => {
   const navigate = useNavigate();
   const name = useField("");
   const password = useField("");
-  const username = userField("");
+  const username = useField("");
   const phone_number = useField("");
   const licenseNumber = useField("");
   const date_of_birth = useField("");
