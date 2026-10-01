@@ -140,7 +140,7 @@ const EditVehicleRentalPage = () => {
 
         <label>Contact Email:</label>
         <input
-          type="email"
+          type="text"
           required
           value={agencyContactEmail}
           onChange={(e) => setAgencyContactEmail(e.target.value)}
