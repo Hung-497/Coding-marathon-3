@@ -15,13 +15,13 @@ router.get('/', getAllVehicleRentals);
 router.post('/', createVehicleRental);
 
 // GET /api/vehicleRentals/:vehicleRentalId
-router.get('/:vehicleRentalId', getVehicleRentalById);
+router.get('/:id', getVehicleRentalById);
 
 // PUT /api/vehicleRentals/:vehicleRentalId
-router.put('/:vehicleRentalId', updateVehicleRental);
+router.put('/:id', updateVehicleRental);
 
 // DELETE /api/vehicleRentals/:vehicleRentalId
-router.delete('/:vehicleRentalId', deleteVehicleRental);
+router.delete('/:id', deleteVehicleRental);
 
 module.exports = router;
 

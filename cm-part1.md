@@ -171,7 +171,7 @@ The deployed application must be working and accessible.
 
 Part A is complete when the group has:
 
-* [ ] API V1 CRUD endpoints implemented
+* [x] API V1 CRUD endpoints implemented
 * [ ] Backend tests for API V1 implemented
 * [ ] Frontend V1 implemented
 * [ ] Frontend works with API V1
