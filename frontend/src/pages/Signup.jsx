@@ -5,8 +5,8 @@ import useSignup from "../hooks/useSignup";
 const Signup = ({ setIsAuthenticated }) => {
   const navigate = useNavigate();
   const name = useField("");
-  const password = useField("");
-  const username = useField("");
+  const password = useField("password");
+  const username = useField("username");
   const phone_number = useField("");
   const licenseNumber = useField("");
   const date_of_birth = useField("");

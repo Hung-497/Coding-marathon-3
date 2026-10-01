@@ -4,8 +4,8 @@ import useLogin from "../hooks/useLogin";
 
 const Login = ({ setIsAuthenticated }) => {
   const navigate = useNavigate();
-  const username = useField("");
-  const password= useField("");
+  const username = useField("username");
+  const password= useField("password");
   const { login, isLoading, error } = useLogin("/api/auth/login");
 
   const handleFormSubmit = async (e) => {
