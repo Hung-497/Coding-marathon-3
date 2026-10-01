@@ -1,0 +1,1 @@
+I would give my self 60 points, I think I fulfilled the requirments for this coding marathon, we were able to implement all the features, and I think the the code quality is good, it follows what we leraned during this period.
