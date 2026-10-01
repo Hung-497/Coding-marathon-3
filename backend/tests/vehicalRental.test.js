@@ -7,47 +7,45 @@ const VehicleRentals = require("../models/vehicleRentalModel");
 const api = supertest(app);
 
 const vehicleRentals = [
-    {
-        vehicleModel: "Toyota Camry",
-        category: "Electric",
-        description: " A flashy and clean car",
-        agency: {
-           name: " Car Rentals",
-           contactEmail: "contact@carrentals.com",
-           fleetSize:100,
-        },
-        location: {
-            city: "Espoo",
-            state: "Uusimaa",
-        },
-        dailyPrice: 50,
-        listingDate: 20-11-2025,
-        availabilityStatus: "maintenance",
-        bookingDeadline: 22-11-2027,
-        insurancePolicy: "Comprehensive coverage with roadside assistance",
-
+  {
+    vehicleModel: "Toyota Camry",
+    category: "Electric",
+    description: " A flashy and clean car",
+    agency: {
+      name: " Car Rentals",
+      contactEmail: "contact@carrentals.com",
+      fleetSize: 100,
     },
-    {
-        vehicleModel: "Porsche 911",
-        category: "Fuel",
-        description: " An old and clean car",
-        agency: {
-           name: " Car Rentals",
-           contactEmail: "contact@carrentals.com",
-           fleetSize:100,
-        },
-        location: {
-            city: "Vantaa",
-            state: "Uusimaa",
-        },
-        dailyPrice: 50,
-        listingDate: 20-11-2025,
-        availabilityStatus: "available",
-        bookingDeadline: 22-11-2027,
-        insurancePolicy: "Comprehensive coverage with roadside assistance",
+    location: {
+      city: "Espoo",
+      state: "Uusimaa",
     },
-
-]
+    dailyPrice: 50,
+    listingDate: 20 - 11 - 2025,
+    availabilityStatus: "maintenance",
+    bookingDeadline: 22 - 11 - 2027,
+    insurancePolicy: "Comprehensive coverage with roadside assistance",
+  },
+  {
+    vehicleModel: "Porsche 911",
+    category: "Fuel",
+    description: " An old and clean car",
+    agency: {
+      name: " Car Rentals",
+      contactEmail: "contact@carrentals.com",
+      fleetSize: 100,
+    },
+    location: {
+      city: "Vantaa",
+      state: "Uusimaa",
+    },
+    dailyPrice: 50,
+    listingDate: 20 - 11 - 2025,
+    availabilityStatus: "available",
+    bookingDeadline: 22 - 11 - 2027,
+    insurancePolicy: "Comprehensive coverage with roadside assistance",
+  },
+];
 
 beforeAll(async () => {
   await connectDB();
@@ -61,7 +59,6 @@ beforeEach(async () => {
 afterAll(async () => {
   await mongoose.connection.close();
 });
-
 
 describe("GET /api/vehicleRentals", () => {
   it("should return all vehicle rentals", async () => {
@@ -81,11 +78,10 @@ describe("GET /api/vehicleRentals", () => {
     const response = await api.get("/api/vehicleRentals");
 
     expect(response.body.map((rental) => rental.vehicleModel)).toContain(
-      "Toyota Camry"
+      "Toyota Camry",
     );
   });
 });
-
 
 describe("POST /api/vehicleRentals", () => {
   describe("when the payload is valid", () => {
@@ -95,22 +91,22 @@ describe("POST /api/vehicleRentals", () => {
         category: "Electronics",
         description: "A flashy and clean car",
         agency: {
-           name: " Car Rentals",
-           contactEmail: "contact@carrentals.com",
-           fleetSize:100,
+          name: " Car Rentals",
+          contactEmail: "contact@carrentals.com",
+          fleetSize: 100,
         },
         location: {
-            city: "Espoo",
-            state: "Uusimaa",
+          city: "Espoo",
+          state: "Uusimaa",
         },
         dailyPrice: 50,
-        listingDate: 20-11-2025,
-        availabilityStatus:  "rented",
-        bookingDeadline: 22-11-2027,
+        listingDate: 20 - 11 - 2025,
+        availabilityStatus: "rented",
+        bookingDeadline: 22 - 11 - 2027,
         insurancePolicy: "Comprehensive coverage with roadside assistance",
-        };
-        
-        await api.post("/api/vehicleRentals").send(newVehicles).expect(201);
+      };
+
+      await api.post("/api/vehicleRentals").send(newVehicles).expect(201);
     });
 
     it("should persist the new vehicles in the database", async () => {
@@ -119,84 +115,87 @@ describe("POST /api/vehicleRentals", () => {
         category: "Electronics",
         description: "A flashy and clean car",
         agency: {
-           name: " Car Rentals",
-           contactEmail: "contact@carrentals.com",
-           fleetSize:100,
+          name: " Car Rentals",
+          contactEmail: "contact@carrentals.com",
+          fleetSize: 100,
         },
         location: {
-            city: "Espoo",
-            state: "Uusimaa",
+          city: "Espoo",
+          state: "Uusimaa",
         },
         dailyPrice: 50,
-        listingDate: 20-11-2025,
-        availabilityStatus:  "available",
-        bookingDeadline: 22-11-2027,
+        listingDate: 20 - 11 - 2025,
+        availabilityStatus: "available",
+        bookingDeadline: 22 - 11 - 2027,
         insurancePolicy: "Comprehensive coverage with roadside assistance",
-        };
+      };
 
       await api.post("/api/vehicleRentals").send(newVehicles).expect(201);
 
       const vehiclesAfterPost = await VehicleRentals.find({});
       expect(vehiclesAfterPost).toHaveLength(vehicleRentals.length + 1);
-      expect(vehiclesAfterPost.map((vehicle) => vehicle.vehicleModel)).toContain(
-        newVehicles.vehicleModel
-      );
+      expect(
+        vehiclesAfterPost.map((vehicle) => vehicle.vehicleModel),
+      ).toContain(newVehicles.vehicleModel);
     });
   });
 });
 
-  describe("when the payload is invalid", () => {
-    it("should return status 400 when vehicles is missing", async () => {
-      const invalidVehicleRental = {
-        vehicleModel: "Porsche 911",
-        category: "Fuel",
-        description: " An old and clean car",
-        agency: {
-           name: " Car Rentals",
-           contactEmail: "contact@carrentals.com",
-           fleetSize:100,
-        },
-        location: {
-            city: "Vantaa",
-            state: "Uusimaa",
-        },
-        dailyPrice: 50,
-        listingDate: 20-11-2025,
-        availabilityStatus: "rented",
-        bookingDeadline: 22-11-2027,
-        insurancePolicy: "Comprehensive coverage with roadside assistance",
+describe("when the payload is invalid", () => {
+  it("should return status 400 when vehicles is missing", async () => {
+    const invalidVehicleRental = {
+      category: "Fuel",
+      description: " An old and clean car",
+      agency: {
+        name: " Car Rentals",
+        contactEmail: "contact@carrentals.com",
+        fleetSize: 100,
+      },
+      location: {
+        city: "Vantaa",
+        state: "Uusimaa",
+      },
+      dailyPrice: 50,
+      listingDate: 20 - 11 - 2025,
+      availabilityStatus: "rented",
+      bookingDeadline: 22 - 11 - 2027,
+      insurancePolicy: "Comprehensive coverage with roadside assistance",
+    };
 
-        };
+    await api
+      .post("/api/vehicleRentals")
+      .send(invalidVehicleRental)
+      .expect(400);
+  });
 
-      await api.post("/api/vehicleRentals").send(invalidVehicleRental).expect(400);
-    });
+  it("should not increase the number of products in the database", async () => {
+    const invalidVehicleRental = {
+      category: "Fuel",
+      description: " An old and clean car",
+      agency: {
+        name: " Car Rentals",
+        contactEmail: "contact@carrentals.com",
+        fleetSize: 100,
+      },
+      location: {
+        city: "Vantaa",
+        state: "Uusimaa",
+      },
+      dailyPrice: 50,
+      listingDate: 20 - 11 - 2025,
+      availabilityStatus: "rented",
+      bookingDeadline: 22 - 11 - 2027,
+      insurancePolicy: "Comprehensive coverage with roadside assistance",
+    };
 
-    it("should not increase the number of products in the database", async () => {
-      const invalidVehicleRental = {
-        vehicleModel: "Porsche 911",
-        category: "Fuel",
-        description: " An old and clean car",
-        agency: {
-           name: " Car Rentals",
-           contactEmail: "contact@carrentals.com",
-           fleetSize:100,
-        },
-        location: {
-            city: "Vantaa",
-            state: "Uusimaa",
-        },
-        dailyPrice: 50,
-        listingDate: 20-11-2025,
-        availabilityStatus:  "rented",
-        bookingDeadline: 22-11-2027,
-        insurancePolicy: "Comprehensive coverage with roadside assistance",
-        };
+    await api
+      .post("/api/vehicleRentals")
+      .send(invalidVehicleRental)
+      .expect(400);
 
-      await api.post("/api/vehicleRentals").send(invalidVehicleRental).expect(400);
-
-      const VehicleRentalsAtEnd = await VehicleRentals.find({});
-      expect(VehicleRentalsAtEnd).toHaveLength(vehicleRentals.length);
-    });
+    const VehicleRentalsAtEnd = await VehicleRentals.find({});
+    expect(VehicleRentalsAtEnd).toHaveLength(vehicleRentals.length);
+  });
 });
 
 describe("PUT /api/vehicleRentals/:vehicleId", () => {
@@ -216,7 +215,10 @@ describe("PUT /api/vehicleRentals/:vehicleId", () => {
         description: "Updated description",
       };
 
-      await api.put(`/api/vehicleRentals/${vehicleRental.id}`).send(updates).expect(200);
+      await api
+        .put(`/api/vehicleRentals/${vehicleRental.id}`)
+        .send(updates)
+        .expect(200);
 
       const updatedVehicle = await VehicleRentals.findById(vehicleRental.id);
       expect(updatedVehicle.description).toBe(updates.description);
@@ -229,7 +231,6 @@ describe("PUT /api/vehicleRentals/:vehicleId", () => {
     });
   });
 });
-
 
 describe("DELETE /api/vehicle-rentals/:vehicleId", () => {
   describe("when the id is valid", () => {
