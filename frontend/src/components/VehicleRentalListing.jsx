@@ -9,7 +9,7 @@ const VehicleRentalListing = ({ vehicle }) => {
       <p>Category: {vehicle.category}</p>
       <p>Daily Price: {vehicle.dailyPrice}</p>
       <p>Agency:</p>
-      <p>name: {vehicle.agency.name}</p>
+      <p>Name: {vehicle.agency.name}</p>
       <p>Contact email: {vehicle.agency.contactEmail}</p>
       <p>fleet Size: {vehicle.agency.fleetSize}</p>
       <p>Location:</p>
@@ -17,7 +17,7 @@ const VehicleRentalListing = ({ vehicle }) => {
       <p>State: {vehicle.location.state}</p>
       <p>Listing Date: {vehicle.listingDate  ? new Date(vehicle.listingDate).toLocaleDateString()
                      : "—"}</p>
-      <p>Availability: {vehicle.availabiltyStatus}</p>
+      <p>Availability: {vehicle.availabilityStatus}</p>
       <p>Booking Deadline: {vehicle.bookingDeadline   ? new Date(vehicle.bookingDeadline).toLocaleDateString()
                      : "—"} </p>
       <p>Insurance Policy: {vehicle.insurancePolicy}</p>

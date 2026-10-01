@@ -70,7 +70,7 @@ const VehicleRentalPage = () => {
                     </p>
                     <p>Insurance Policy: {vehicle.insurancePolicy}</p>
                     <p>Category: {vehicle.category}</p>
-                    <p>Description: {vehicle.decription}</p>
+                    <p>Description: {vehicle.description}</p>
                     <p>Listing Date: {vehicle.listingDate  ? new Date(vehicle.listingDate).toLocaleDateString()
                      : "—"}</p>
                     <p>Availability Status: {vehicle.availabilityStatus}</p>
