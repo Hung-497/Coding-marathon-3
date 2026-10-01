@@ -139,18 +139,18 @@ The deployed application must be working and accessible.
 
 Part B is complete when the group has:
 
-* [ ] API V2 implemented
-* [ ] User administration implemented
-* [ ] Signup implemented
-* [ ] Login implemented
-* [ ] Protected VehicleRental routes implemented
-* [ ] Backend tests for API V2 implemented
-* [ ] Authentication tests implemented
-* [ ] Frontend V2 implemented
-* [ ] Registration and login implemented in the frontend
-* [ ] Frontend integrated with API V2
-* [ ] API V2 and Frontend V2 deployed
-* [ ] Separate MongoDB Atlas database used for API V2
+* [X] API V2 implemented
+* [X] User administration implemented
+* [X] Signup implemented
+* [X] Login implemented
+* [X] Protected VehicleRental routes implemented
+* [X] Backend tests for API V2 implemented
+* [X] Authentication tests implemented
+* [X] Frontend V2 implemented
+* [X] Registration and login implemented in the frontend
+* [X] Frontend integrated with API V2
+* [X] API V2 and Frontend V2 deployed
+* [X] Separate MongoDB Atlas database used for API V2
 
 A group may continue working after 16:00 if necessary. However, Part B badges are awarded based on completion before the stated deadline.
 
