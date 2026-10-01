@@ -22,9 +22,9 @@ const vehicleRentals = [
       state: "Uusimaa",
     },
     dailyPrice: 50,
-    listingDate: "20 - 11 - 2025",
+    listingDate: "2025-11-20",
     availabilityStatus: "maintenance",
-    bookingDeadline: "22 - 11 - 2027",
+    bookingDeadline: "2027-11-22",
     insurancePolicy: "Comprehensive coverage with roadside assistance",
   },
   {
@@ -41,9 +41,9 @@ const vehicleRentals = [
       state: "Uusimaa",
     },
     dailyPrice: 50,
-    listingDate: "20 - 11 - 2025",
+    listingDate: "2025-11-20",
     availabilityStatus: "available",
-    bookingDeadline: "22 - 11 - 2027",
+    bookingDeadline: "2027-11-22",
     insurancePolicy: "Comprehensive coverage with roadside assistance",
   },
 ];
@@ -83,7 +83,7 @@ beforeEach(async () => {
   await authorizedRequest(api.post("/api/vehicleRentals"))
     .send(vehicleRentals[0])
     .expect(201);
-    
+
   await authorizedRequest(api.post("/api/vehicleRentals"))
     .send(vehicleRentals[1])
     .expect(201);
@@ -139,9 +139,9 @@ describe("POST /api/vehicleRentals", () => {
           state: "Uusimaa",
         },
         dailyPrice: 50,
-        listingDate: "20 - 11 - 2025",
+        listingDate: "2025-11-20",
         availabilityStatus: "rented",
-        bookingDeadline: "22 - 11 - 2027",
+        bookingDeadline: "2027-11-22",
         insurancePolicy: "Comprehensive coverage with roadside assistance",
       };
 
@@ -165,9 +165,9 @@ describe("POST /api/vehicleRentals", () => {
           state: "Uusimaa",
         },
         dailyPrice: 50,
-        listingDate: "20 - 11 - 2025",
+        listingDate: "2025-11-20",
         availabilityStatus: "available",
-        bookingDeadline: "22 - 11 - 2027",
+        bookingDeadline: "2027-11-22",
         insurancePolicy: "Comprehensive coverage with roadside assistance",
       };
 
@@ -180,7 +180,7 @@ describe("POST /api/vehicleRentals", () => {
       );
       expect(vehiclesAfterPost.body).toHaveLength(vehicleRentals.length + 1);
       expect(
-        vehiclesAfterPost.map((vehicle) => vehicle.vehicleModel),
+        vehiclesAfterPost.body.map((vehicle) => vehicle.vehicleModel),
       ).toContain(newVehicles.vehicleModel);
     });
   });
@@ -201,9 +201,9 @@ describe("when the payload is invalid", () => {
         state: "Uusimaa",
       },
       dailyPrice: 50,
-      listingDate: "20 - 11 - 2025",
+      listingDate: "2025-11-20",
       availabilityStatus: "rented",
-      bookingDeadline: "22 - 11 - 2027",
+      bookingDeadline: "2027-11-22",
       insurancePolicy: "Comprehensive coverage with roadside assistance",
     };
 
@@ -226,9 +226,9 @@ describe("when the payload is invalid", () => {
         state: "Uusimaa",
       },
       dailyPrice: 50,
-      listingDate: "20 - 11 - 2025",
+      listingDate: "2025-11-20",
       availabilityStatus: "rented",
-      bookingDeadline: "22 - 11 - 2027",
+      bookingDeadline: "2027-11-22",
       insurancePolicy: "Comprehensive coverage with roadside assistance",
     };
 
