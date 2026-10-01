@@ -4,8 +4,7 @@ const mongoose = require("mongoose");
 // GET /api/vehicleRentals
 const getAllVehicleRentals = async (req, res) => {
   try {
-    const user_id = req.user._id
-    const vehicleRentals = await VehicleRental.find({user_id}).sort({ createdAt: -1 });
+    const vehicleRentals = await VehicleRental.find({}).sort({ createdAt: -1 });
     res.status(200).json(vehicleRentals);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -107,7 +106,7 @@ const updateVehicleRental = async (req, res) => {
       { new: true },
     );
     if (!updatedVehicle) {
-      res.status(404).json({ message: " 404 not found" });
+      return res.status(404).json({ message: " 404 not found" });
     }
 
     res.status(200).json(updatedVehicle);
@@ -126,7 +125,7 @@ const deleteVehicleRental = async (req, res) => {
   try {
     const deleteVehicle = await VehicleRental.findByIdAndDelete(id);
     if (!deleteVehicle) {
-      res.status(404).json({ message: "not found" });
+      return res.status(404).json({ message: "not found" });
     }
     res.status(204).send();
   } catch (error) {

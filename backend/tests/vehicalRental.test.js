@@ -22,9 +22,9 @@ const vehicleRentals = [
       state: "Uusimaa",
     },
     dailyPrice: 50,
-    listingDate: 20 - 11 - 2025,
+    listingDate: "20 - 11 - 2025",
     availabilityStatus: "maintenance",
-    bookingDeadline: 22 - 11 - 2027,
+    bookingDeadline: "22 - 11 - 2027",
     insurancePolicy: "Comprehensive coverage with roadside assistance",
   },
   {
@@ -41,9 +41,9 @@ const vehicleRentals = [
       state: "Uusimaa",
     },
     dailyPrice: 50,
-    listingDate: 20 - 11 - 2025,
+    listingDate: "20 - 11 - 2025",
     availabilityStatus: "available",
-    bookingDeadline: 22 - 11 - 2027,
+    bookingDeadline: "22 - 11 - 2027",
     insurancePolicy: "Comprehensive coverage with roadside assistance",
   },
 ];
@@ -65,7 +65,7 @@ const validUser = {
 let token = null;
 
 const authorizedRequest = (request) => {
-  request.set("Authorization", "bearer " + token);
+  return request.set("Authorization", "bearer " + token);
 };
 
 beforeAll(async () => {
@@ -74,13 +74,16 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   await User.deleteMany({});
-  const result = await api.post("/api/auth/signup").send(validUser);
+  await VehicleRentals.deleteMany({});
+
+  const result = await api.post("/api/auth/signup").send(validUser).expect(201);
+
   token = result.body.token;
 
-  await VehicleRentals.deleteMany({});
   await authorizedRequest(api.post("/api/vehicleRentals"))
     .send(vehicleRentals[0])
     .expect(201);
+    
   await authorizedRequest(api.post("/api/vehicleRentals"))
     .send(vehicleRentals[1])
     .expect(201);
@@ -123,7 +126,7 @@ describe("POST /api/vehicleRentals", () => {
   describe("when the payload is valid", () => {
     it("should return status 201", async () => {
       const newVehicles = {
-        vehicleModel: "Toyota Camry",
+        vehicleModel: "tesla",
         category: "Electronics",
         description: "A flashy and clean car",
         agency: {
@@ -136,9 +139,9 @@ describe("POST /api/vehicleRentals", () => {
           state: "Uusimaa",
         },
         dailyPrice: 50,
-        listingDate: 20 - 11 - 2025,
+        listingDate: "20 - 11 - 2025",
         availabilityStatus: "rented",
-        bookingDeadline: 22 - 11 - 2027,
+        bookingDeadline: "22 - 11 - 2027",
         insurancePolicy: "Comprehensive coverage with roadside assistance",
       };
 
@@ -149,7 +152,7 @@ describe("POST /api/vehicleRentals", () => {
 
     it("should persist the new vehicles in the database", async () => {
       const newVehicles = {
-        vehicleModel: "Toyota Camry",
+        vehicleModel: "tesla",
         category: "Electronics",
         description: "A flashy and clean car",
         agency: {
@@ -162,9 +165,9 @@ describe("POST /api/vehicleRentals", () => {
           state: "Uusimaa",
         },
         dailyPrice: 50,
-        listingDate: 20 - 11 - 2025,
+        listingDate: "20 - 11 - 2025",
         availabilityStatus: "available",
-        bookingDeadline: 22 - 11 - 2027,
+        bookingDeadline: "22 - 11 - 2027",
         insurancePolicy: "Comprehensive coverage with roadside assistance",
       };
 
@@ -175,7 +178,7 @@ describe("POST /api/vehicleRentals", () => {
       const vehiclesAfterPost = await authorizedRequest(
         api.get("/api/vehicleRentals"),
       );
-      expect(vehiclesAfterPost).toHaveLength(vehicleRentals.length + 1);
+      expect(vehiclesAfterPost.body).toHaveLength(vehicleRentals.length + 1);
       expect(
         vehiclesAfterPost.map((vehicle) => vehicle.vehicleModel),
       ).toContain(newVehicles.vehicleModel);
@@ -198,9 +201,9 @@ describe("when the payload is invalid", () => {
         state: "Uusimaa",
       },
       dailyPrice: 50,
-      listingDate: 20 - 11 - 2025,
+      listingDate: "20 - 11 - 2025",
       availabilityStatus: "rented",
-      bookingDeadline: 22 - 11 - 2027,
+      bookingDeadline: "22 - 11 - 2027",
       insurancePolicy: "Comprehensive coverage with roadside assistance",
     };
 
@@ -223,9 +226,9 @@ describe("when the payload is invalid", () => {
         state: "Uusimaa",
       },
       dailyPrice: 50,
-      listingDate: 20 - 11 - 2025,
+      listingDate: "20 - 11 - 2025",
       availabilityStatus: "rented",
-      bookingDeadline: 22 - 11 - 2027,
+      bookingDeadline: "22 - 11 - 2027",
       insurancePolicy: "Comprehensive coverage with roadside assistance",
     };
 
@@ -233,32 +236,28 @@ describe("when the payload is invalid", () => {
       .send(invalidVehicleRental)
       .expect(400);
 
-    const VehicleRentalsAtEnd = await authorizedRequest(
-      api.get("/api/vehicleRentals"),
-    );
-    expect(VehicleRentalsAtEnd).toHaveLength(vehicleRentals.length);
+    const VehicleRentalsAtEnd = await api.get("/api/vehicleRentals").expect(200);
+    expect(VehicleRentalsAtEnd.body).toHaveLength(vehicleRentals.length);
   });
 });
 
 describe("PUT /api/vehicleRentals/:vehicleId", () => {
   describe("when the id is valid", () => {
     it("should return status 200", async () => {
-      const vehicleRental = await authorizedRequest(
-        api.get("/api/vehicleRentals"),
-      );
+      const vehicleRental = await api.get("/api/vehicleRentals").expect(200);
       const id = vehicleRental.body[0].id;
-      await authorizedRequest(api.patch(`/api/vehicleRentals/${id}`))
+      await authorizedRequest(api.put(`/api/vehicleRentals/${id}`))
         .send({ description: "Updated description" })
         .expect(200);
     });
 
     it("should persist the updated fields in the database", async () => {
-      const vehicleRental = await authorizedRequest(
-        api.get("/api/vehicleRentals"),
-      );
+      const vehicleRental = await api.get("/api/vehicleRentals").expect(200);
+
       const id = vehicleRental.body[0].id;
-      await authorizedRequest(api.patch(`/api/vehicleRentals/${id}`))
-        .send({ description: "Updated description" })
+      const updates = { description: "Updated description" }
+      await authorizedRequest(api.put(`/api/vehicleRentals/${id}`))
+        .send(updates)
         .expect(200);
 
       const updatedVehicle = await VehicleRentals.findById(id);
@@ -268,7 +267,7 @@ describe("PUT /api/vehicleRentals/:vehicleId", () => {
 
   describe("when the id is invalid", () => {
     it("should return status 404", async () => {
-      await authorizedRequest(api.put("/api/vehicalRentals/12345"))
+      await authorizedRequest(api.put("/api/vehicleRentals/12345"))
         .send({})
         .expect(404);
     });
@@ -278,25 +277,19 @@ describe("PUT /api/vehicleRentals/:vehicleId", () => {
 describe("DELETE /api/vehicle-rentals/:vehicleId", () => {
   describe("when the id is valid", () => {
     it("should return status 204", async () => {
-      const vehicleRental = await authorizedRequest(
-        api.get("/api/vehicleRentals"),
-      );
+      const vehicleRental = await api.get("/api/vehicleRentals").expect(200)
+
       const id = vehicleRental.body[0].id;
 
-      await authorizedRequest(api.delete(`/api/vehicleRentals/${id}`)).expect(
-        204,
-      );
+      await authorizedRequest(api.delete(`/api/vehicleRentals/${id}`)).expect(204);
     });
 
     it("should remove the product from the database", async () => {
-      const vehicleRental = await authorizedRequest(
-        api.get("/api/vehicleRentals"),
-      );
+      const vehicleRental = await api.get("/api/vehicleRentals").expect(200)
+
       const id = vehicleRental.body[0].id;
 
-      await authorizedRequest(api.delete(`/api/vehicleRentals/${id}`)).expect(
-        204,
-      );
+      await authorizedRequest(api.delete(`/api/vehicleRentals/${id}`)).expect(204);
 
       const deletedVehicle = await VehicleRentals.findById(id);
       expect(deletedVehicle).toBeNull();
@@ -305,9 +298,7 @@ describe("DELETE /api/vehicle-rentals/:vehicleId", () => {
 
   describe("when the id is invalid", () => {
     it("should return status 404", async () => {
-      await authorizedRequest(api.delete("/api/vehicleRentals/12345")).expect(
-        404,
-      );
+      await authorizedRequest(api.delete("/api/vehicleRentals/12345")).expect(404);
     });
   });
 });
