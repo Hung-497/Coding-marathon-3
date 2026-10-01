@@ -23,7 +23,7 @@ const AddVehicleRentalPage = () => {
 
   const addVehicleRental = async (newVehicle) => {
     try {
-      const res = await fetch("/api/vehicles", {
+      const res = await fetch("/api/vehicleRentals", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

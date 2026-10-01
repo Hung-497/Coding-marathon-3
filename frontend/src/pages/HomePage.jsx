@@ -10,7 +10,7 @@ const Home = () => {
   useEffect(() => {
     const fetchVehicles = async () => {
       try {
-        const response = await fetch("/api/vehicles");
+        const response = await fetch("/api/vehicleRentals");
         if (!response.ok) throw new Error("Could not fetch vehicles");
         const data = await response.json();
         setVehicles(data);

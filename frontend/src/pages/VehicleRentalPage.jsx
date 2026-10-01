@@ -14,7 +14,7 @@ const VehicleRentalPage = () => {
 
     const deleteVehicle = async (vehicleId) => {
         try {
-            const res = await fetch(`/api/vehicles/${vehicleId}`, {
+            const res = await fetch(`/api/vehicleRentals/${vehicleId}`, {
                 method: "DELETE",
                 headers: {
                     // Authorization: `Bearer ${token}`,    // <-- ADD THIS
