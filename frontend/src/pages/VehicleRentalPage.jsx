@@ -60,8 +60,9 @@ const VehicleRentalPage = () => {
                     <li>Agency Name: {vehicle.agency.name}</li>
                     <li>Agency Email: {vehicle.agency.contactEmail}</li>
                     <li>Agency Fleet Size: {vehicle.agency.fleetSize}</li>
-                    <p>City: {vehicle.city}</p>
-                    <p>State: {vehicle.state}</p>
+                    <ul>Location</ul>
+                    <li>City: {vehicle.location.city}</li>
+                    <li>State: {vehicle.location.state}</li>
                     <p>Daily Price: €{vehicle.dailyPrice}</p>
                     <p>Booking Deadline: {vehicle.bookingDeadline}</p>
                     <p>Insurance Policy: {vehicle.insurancePolicy}</p>

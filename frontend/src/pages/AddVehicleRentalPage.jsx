@@ -45,11 +45,15 @@ const AddVehicleRentalPage = () => {
     console.log("Form submitted");
     const newVehicle = {
             vehicleModel: vehicleModel.value,
-            agencyName: agencyName.value,
-            agencyEmail: agencyEmail.value,
-            fleetSize: fleetSize.value,
-            city: city.value,
-            state: state.value,
+            agency: {
+              name: agencyName.value,
+              contactEmail: agencyEmail.value,
+              fleetSize: fleetSize.value,
+            },
+            location: {
+              city: city.value,
+              state: state.value,
+            },
             dailyPrice: dailyPrice.value,
             bookingDeadline: bookingDeadline.value,
             insurancePolicy: insurancePolicy.value,
